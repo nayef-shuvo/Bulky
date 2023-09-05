@@ -1,4 +1,4 @@
-﻿@model Category
+@model Category
 
 <style>
     .border {
@@ -6,11 +6,11 @@
     }
 </style>
 
-<form method="post" asp-action="Create">
+<form method="post" asp-action="Edit">
     <div class="border p-3 mt-4">
         <div class="row pb-2">
             <h2 class="text-primary">
-                Create a new category
+                Edit Category
             </h2>
         </div>
         <div class="mb-3">
@@ -23,7 +23,7 @@
             <input asp-for="DisplayOrder" class="form-control">
             <span asp-validation-for="DisplayOrder" class="text-danger"></span>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 300px; height: 53px;"> Create </button>
+        <button type="submit" class="btn btn-primary" style="width: 300px; height: 53px;"> Update </button>
         <a asp-asp-controller="Category" asp-action="Index" class="btn btn-secondary border border-2 border-black"
             style="width: 300px;">Back to list</a>
     </div>

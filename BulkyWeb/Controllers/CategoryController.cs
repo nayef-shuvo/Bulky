@@ -1,3 +1,4 @@
+using System.Security.Policy;
 using BulkyWeb.Data;
 using BulkyWeb.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,6 @@ public class CategoryController : Controller
         return View(categories);
     }
 
-    [HttpGet]
     public IActionResult Create()
     {
         return View();
@@ -30,8 +30,76 @@ public class CategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Category category)
     {
-        await _context.Categories.AddAsync(category);
+         if (!string.IsNullOrEmpty(category.Name) && !category.Name.All(char.IsLetter))
+        {
+            ModelState.AddModelError("Name", "Category Name must contain letters only");
+        }
+
+        if (ModelState.IsValid)
+        {
+            await _context.Categories.AddAsync(category);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Category");
+        }
+
+        return View(category);
+    }
+
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+        var category = await _context.Categories.FindAsync(id);
+        if (category == null)
+        {
+            return NotFound();
+        }
+        return View(category);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Category category)
+    {
+        if (!string.IsNullOrEmpty(category.Name) && !category.Name.All(char.IsLetter) )
+        {
+            ModelState.AddModelError("Name", "Category Name must contain letters only");
+        }
+
+        if (ModelState.IsValid)
+        {
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Category");
+        }
+
+        return View(category);
+    }
+
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+        var category = await _context.Categories.FindAsync(id);
+        if (category == null)
+        {
+            return NotFound();
+        }
+        return View(category);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(Category category)
+    {
+        _context.Categories.Remove(category);
         await _context.SaveChangesAsync();
         return RedirectToAction("Index", "Category");
     }
+
+    
 }
