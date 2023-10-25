@@ -1,4 +1,3 @@
-using System.Security.Policy;
 using BulkyWeb.Data;
 using BulkyWeb.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +12,7 @@ public class CategoryController : Controller
     public CategoryController(ApplicationDbContext context)
     {
         _context = context;
+
     }
 
     public async Task<IActionResult> Index()
@@ -30,7 +30,7 @@ public class CategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Category category)
     {
-         if (!string.IsNullOrEmpty(category.Name) && !category.Name.All(char.IsLetter))
+        if (!string.IsNullOrEmpty(category.Name) && !category.Name.All(char.IsLetter))
         {
             ModelState.AddModelError("Name", "Category Name must contain letters only");
         }
@@ -39,6 +39,7 @@ public class CategoryController : Controller
         {
             await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
+            TempData["success"] = "Category Created Successfully";
             return RedirectToAction("Index", "Category");
         }
 
@@ -63,7 +64,7 @@ public class CategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Category category)
     {
-        if (!string.IsNullOrEmpty(category.Name) && !category.Name.All(char.IsLetter) )
+        if (!string.IsNullOrEmpty(category.Name) && !category.Name.All(char.IsLetter))
         {
             ModelState.AddModelError("Name", "Category Name must contain letters only");
         }
@@ -72,6 +73,7 @@ public class CategoryController : Controller
         {
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
+            TempData["success"] = "Category Updated Successfully";
             return RedirectToAction("Index", "Category");
         }
 
@@ -80,6 +82,7 @@ public class CategoryController : Controller
 
     public async Task<IActionResult> Delete(int? id)
     {
+        
         if (id == null)
         {
             return NotFound();
@@ -98,8 +101,7 @@ public class CategoryController : Controller
     {
         _context.Categories.Remove(category);
         await _context.SaveChangesAsync();
+        TempData["success"] = "Category Deleted Successfully";
         return RedirectToAction("Index", "Category");
     }
-
-    
 }
